@@ -27,7 +27,7 @@ app.post("/signup", async (req, res) => {
         })
 
         if (user) {
-            return res.json({
+            return res.status(400).json({
                 message: "user already exists!"
             })
         }
@@ -53,8 +53,49 @@ app.post("/signup", async (req, res) => {
     catch (error) {
         console.log("Error Occured!");
         console.log(error)
+        return res.status(400).json({
+            message: "Internal Server Error!"
+        })
     }
 
+})
+
+app.post("/login",async(req,res)=>{
+    try {
+
+        const body = req.body;
+
+        const user = await User.findOne({
+            email: body.email
+        })
+
+        if(user.email != body.email){
+            return res.status(400).json({
+                message: "No user found with this email"
+            })
+        }
+
+        const ans = await bcrypt.compare(body.password, user.password);
+
+        if(!ans){
+            return res.status(400).json({
+                message: "Incorrect Password!"
+            })
+        }
+
+        return res.json({
+            message: "success"
+        })
+
+
+        
+    } catch (error) {
+        console.log("Error Occured!");
+        console.log(error)
+        return res.status(400).json({
+            message: "Internal Server Error!"
+        })
+    }
 })
 
 //MAIN
