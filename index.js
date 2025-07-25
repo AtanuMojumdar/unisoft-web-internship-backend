@@ -4,6 +4,7 @@ const dbConnection = require("./db/dbConnection.js")
 const cors = require("cors")
 const User = require("./db/models/UserSchema.js")
 const bcrypt = require("bcryptjs")
+const deleteUser = require("./db/dbOps/main.js")
 
 //GLOBAL
 const app = express()
@@ -16,6 +17,22 @@ app.use(express.json())
 //Routes
 app.get("/", (req, res) => {
     return res.send("Hello World")
+})
+
+app.get("/test",async(req,res)=>{
+    try{
+
+        await deleteUser();
+
+        return res.json({
+            message: "success"
+        })
+    }
+    catch(err){
+        return res.status(400).json({
+            message: "Internal Server Error!"
+        })
+    }
 })
 
 app.post("/signup", async (req, res) => {
